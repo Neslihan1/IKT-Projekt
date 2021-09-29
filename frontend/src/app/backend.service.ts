@@ -6,7 +6,7 @@ export interface Note {
   title: string;
   location: string;
   text: string;
-  image: string;
+  image: '';
 }
 
 @Injectable({
@@ -18,7 +18,7 @@ export class BackendService {
   constructor(private http: HttpClient) { }
 
 
-  public addNote(note: { id: null; title: any; location: any; text: any, image: ""; }): Promise<Note> {
+  public addNote(note: { id: null; title: any; location: any; text: any, image: string; }): Promise<Note> {
     return this.http
       .post<Note>(`${this.apiUrl}`, note, {
         headers: new HttpHeaders({

@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ShowComponent } from './show/show.component';
 import { Data } from './data';
+import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { Data } from './data';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    WebcamModule,
   ],
   providers: [Data],
   bootstrap: [AppComponent]

@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { WebcamImage, WebcamInitError, WebcamUtil } from 'ngx-webcam';
+import { Observable, Subject } from 'rxjs';
 import { BackendService } from '../backend.service';
 
 @Component({
@@ -8,21 +10,60 @@ import { BackendService } from '../backend.service';
   styleUrls: ['./create.component.css']
 })
 export class CreateComponent implements OnInit {
+  @Output() getPicture = new EventEmitter<WebcamImage>();
+  showWebcam = true;
+  isCameraExist = true;
+  errors: WebcamInitError[] = [];
+  private trigger: Subject<void> = new Subject<void>();
+  private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
 
   formGroup!: FormGroup;
-  imageBase64!: '';
+  imageBase64!: string;
 
   constructor(private fb: FormBuilder, private bs: BackendService,) {
     // constructor function
   }
 
   ngOnInit(): void {
+    WebcamUtil.getAvailableVideoInputs().then((mediaDevices: MediaDeviceInfo[]) => {
+      this.isCameraExist = mediaDevices && mediaDevices.length > 0;
+    });
     this.formGroup = this.fb.group({
           inp_title: ['', Validators.required],
           inp_location: ['', Validators.required],
           inp_text: ['', Validators.required],
           inp_image: ['', Validators.required]
     });
+  }
+
+  takeSnapshot(): void {
+    this.trigger.next();
+  }
+
+  onOffWebCame() {
+    this.showWebcam = !this.showWebcam;
+  }
+
+  handleInitError(error: WebcamInitError) {
+    this.errors.push(error);
+  }
+
+  changeWebCame(directionOrDeviceId: boolean | string) {
+    this.nextWebcam.next(directionOrDeviceId);
+  }
+
+  handleImage(webcamImage: WebcamImage) {
+    this.getPicture.emit(webcamImage);
+    this.showWebcam = false;
+    this.uploadCameraFileEvt(webcamImage);
+  }
+
+  get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
+  }
+
+  get nextWebcamObservable(): Observable<boolean | string> {
+    return this.nextWebcam.asObservable();
   }
 
   get inp_title(): FormControl {
@@ -52,8 +93,14 @@ export class CreateComponent implements OnInit {
       }
       console.log('note : ', note);
 
-      //await this.bs.addNote(note);
-      console.log(await this.bs.getNotes());
+      await this.bs.addNote(note).then(() => window.location.reload());
+  }
+
+  uploadCameraFileEvt(webcamImage: WebcamImage) {
+    this.imageBase64 = webcamImage.imageAsBase64;
+    console.log('base64', this.imageBase64);
+    (this.formGroup.get('inp_image') as FormControl).setErrors(null);
+    
   }
 
   uploadFileEvt(imgFile: any): void {
