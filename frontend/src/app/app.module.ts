@@ -16,12 +16,15 @@ import { MatInputModule } from '@angular/material/input';
 import { CreateComponent } from './create/create.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ShowComponent } from './show/show.component';
+import { Data } from './data';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
-    CreateComponent
+    CreateComponent,
+    ShowComponent
   ],
   imports: [
     BrowserModule,
@@ -37,9 +40,9 @@ import { HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [Data],
   bootstrap: [AppComponent]
 })
 export class AppModule { }  

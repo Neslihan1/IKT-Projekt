@@ -5,6 +5,7 @@ export interface Note {
   id: number;
   title: string;
   location: string;
+  text: string;
   image: string;
 }
 
@@ -14,7 +15,6 @@ export interface Note {
 export class BackendService {
 
   apiUrl = 'http://localhost:3000/notes';
-
   constructor(private http: HttpClient) { }
 
 

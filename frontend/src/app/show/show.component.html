@@ -1,6 +1,6 @@
 <div class="container" novalidate>
     <div class="form-container">
-        <h3>Note hinzufügen</h3>
+        <h3>Note</h3>
         <form [formGroup]="formGroup">
 
             <mat-form-field class="form-field" appearance="standard">
@@ -27,17 +27,7 @@
             </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="form-field inputbreit" appearance="standard">
-            <!-- Readonly Input to show File names -->
-            <input matInput readonly id="file_name" placeholder="Browse image file" />
-
-            <!-- Fetch selected filed on change -->
-            <input type="file" id="fileUpload" (change)="uploadFileEvt($event)" formControlName="inp_image" multiple="multiple" accept="image/*" />
-        </mat-form-field>
 
         </form>
-        <button mat-stroked-button (click)="onSubmit()" color="default" class="button" [disabled]="!formGroup.valid">
-          Add Note
-        </button>
     </div>
 </div>
